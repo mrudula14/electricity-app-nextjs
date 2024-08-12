@@ -6,7 +6,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { TrendingUp } from "lucide-react";
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue  } from "@/components/ui/select";
 
 interface DayAheadPriceTabsProps {
   prices?: number[];
@@ -19,9 +19,10 @@ export const DayAheadPriceTabs: React.FC<DayAheadPriceTabsProps> = ({ prices }) 
     return <div>No price data available for this day.</div>;
   }
 
-  const times = prices.map((_, index) => `${index}:00`);
 
-  const filteredPrices = selectedTime
+  const times = ["All Hours", ...prices.map((_, index) => `${index}:00`)];
+
+  const filteredPrices = selectedTime && selectedTime !== "All Hours"
     ? prices.map((price, index) => ({
         hour: `${index}:00`,
         price,
@@ -90,12 +91,13 @@ export const DayAheadPriceTabs: React.FC<DayAheadPriceTabsProps> = ({ prices }) 
               <CardDescription>Today</CardDescription>
             </CardHeader>
             <CardContent>
-            <div className="mb-10 mt-5">
-              <Select onValueChange={(value) => setSelectedTime(value)}>
+            {/* Time Filter */}
+            <div className=" z-110 mt-5 mb-4">
+              <Select onValueChange={(value) => setSelectedTime(value)} value={selectedTime}>
                 <SelectTrigger className="w-full">
-                  Select time...
+                  <SelectValue placeholder="Select time..." />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-20">
                   {times.map((time) => (
                     <SelectItem key={time} value={time}>
                       {time}
@@ -104,6 +106,7 @@ export const DayAheadPriceTabs: React.FC<DayAheadPriceTabsProps> = ({ prices }) 
                 </SelectContent>
               </Select>
             </div>
+            <div className="relative z-10">
               <ChartContainer config={chartConfig}>
                 <BarChart accessibilityLayer data={filteredPrices}>
                   <CartesianGrid vertical={false} />
@@ -121,6 +124,7 @@ export const DayAheadPriceTabs: React.FC<DayAheadPriceTabsProps> = ({ prices }) 
                   <Bar dataKey="price" fill="var(--color-price)" radius={4} />
                 </BarChart>
               </ChartContainer>
+              </div>
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
               <div className="flex gap-2 font-medium leading-none">
