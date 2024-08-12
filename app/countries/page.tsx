@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import CountriesList from "@/components/countries-list";
 import { COUNTRIES } from "../constants/countries";
 
@@ -13,7 +14,7 @@ export default function CountriesPage() {
 
   return (
     <main >
-      <input
+      <Input
         type="text"
         placeholder="Search countries"
         value={searchTerm}
